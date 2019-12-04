@@ -19,6 +19,13 @@ for ignore in io.open("ignore-list", "r"):lines() do
   downloaded[ignore] = true
 end
 
+local file = io.open(item_dir..'/'..warc_file_base..'_data.txt', 'w')
+io.output(file)
+if file == nil then
+  io.stdout:write("failed to open: " ..  item_dir..'/'..warc_file_base..'_data.txt' .. "\n")
+  io.stdout:flush()
+end
+
 --Dithered delay start -- off for Google properties
 --math.randomseed( os.time() )
 --local start_time = math.random(1,60) --prod 1min
@@ -30,6 +37,7 @@ end
 --local resp_codes_file = io.open(item_dir..'/'..warc_file_base..'_data.txt', 'w')
 
 -----------------------------------------------------------------------------------------------------------------------
+-- example thumbnail <img aria-hidden="true" onload=";window.__ytRIL &amp;&amp; __ytRIL(this)" src="/yts/img/pixel-vfl3z5WfW.gif" data-ytimg="1" alt="" data-thumb="https://i.ytimg.com/vi/2hgcoa9xYD8/hqdefault.jpg?sqp=-oaymwEiCKgBEF5IWvKriqkDFQgBFQAAAAAYASUAAMhCPQCAokN4AQ==&amp;rs=AOn4CLBdapDZ_zykaBIU2t1zge7aedpuyg" width="72" >
 
 wget.callbacks.get_urls = function(file, url, is_css, iri)
   local urls = {}
@@ -44,6 +52,11 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         table.insert(urls, { url = prefix..key })
       end
       found = true
+    end
+    if string.find(line, 'img .* data%-thumb%=') then
+      for key in string.gmatch(line,'data%-thumb=[\\]?["][^"]+["]') do
+        io.write("thumb:" .. key .. "\n")
+      end
     end
   end
   if not found then
@@ -89,6 +102,7 @@ wget.callbacks.before_exit = function(exit_status, exit_status_string)
   --resp_codes_file:close()
   --io.stdout:write(table.show(code_counts,'\nResponse Code Frequency'))
   --io.stdout:flush()
+  file:close()
   if abortgrab == true then
     local sleep_time = math.random(120,600) --prod 2min - 10min
 
