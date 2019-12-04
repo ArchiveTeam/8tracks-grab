@@ -38,15 +38,15 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
   for line in io.open(file, "r"):lines() do
     if string.find(line, "data%-uix%-load%-more%-href") then
       for key in string.gmatch(line,'continuation=[0-9a-zA-Z][0-9a-zA-Z%%]+') do
-        io.stdout:write("Found: " .. key .. "\n")
+        io.stdout:write("\tNext Found: " .. key .. "\n")
         io.stdout:flush()
-        table.insert(urls, { url = urlcode.unescape(prefix..key) })
+        table.insert(urls, { url = prefix..key })
       end
       found = true
     end
   end
   if not found then
-      io.stdout:write("NotFound\n")
+      io.stdout:write("\tNext Not Found\n")
       io.stdout:flush()
   end 
 
