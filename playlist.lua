@@ -19,11 +19,12 @@ for ignore in io.open("ignore-list", "r"):lines() do
   downloaded[ignore] = true
 end
 
-math.randomseed( os.time() )
-local start_time = math.random(1,60) --prod 1min
-io.stdout:write('Dithered start - Sleeping...' .. start_time .. "\n")
-io.stdout:flush()
-os.execute("sleep " .. start_time)
+--Dithered delay start -- off for Google properties
+--math.randomseed( os.time() )
+--local start_time = math.random(1,60) --prod 1min
+--io.stdout:write('Dithered start - Sleeping...' .. start_time .. "\n")
+--io.stdout:flush()
+--os.execute("sleep " .. start_time)
 
 
 --local resp_codes_file = io.open(item_dir..'/'..warc_file_base..'_data.txt', 'w')
