@@ -228,7 +228,7 @@ class WgetArgs(object):
                 if len(chan_id) == 0:
                     continue
                 playlist_id = chan_id.replace("UC", "LL", 1)
-                #wget_args.extend(['--warc-header', 'gfycat-gfy: ' + line.lower()]) # TODO
+                wget_args.extend(['--warc-header', 'youtube-likedlists-playlist: ' + playlist_id])
                 wget_args.append('https://www.youtube.com/playlist?list=' + playlist_id)
         else:
             raise Exception('Unknown item')
