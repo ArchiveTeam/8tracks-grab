@@ -220,7 +220,7 @@ class WgetArgs(object):
         http_client = httpclient.HTTPClient()
 
         if item_type == 'chan_set':
-            response = http_client.fetch('https://raw.githubusercontent.com/marked/youtube-likedlists-grab/master/' + item_value, method='GET')
+            response = http_client.fetch('https://raw.githubusercontent.com/ArchiveTeam/youtube-likedlists-items/master/items/' + item_value, method='GET')
             if response.code != 200:
                 raise ValueError('Got bad status code {}.'.format(response.code))
             for line in response.body.decode('utf-8', 'ignore').splitlines():
