@@ -185,6 +185,7 @@ class WgetArgs(object):
         wget_args = [
             WGET_LUA,
             '-U', USER_AGENT,
+            '--header="Accept-Language: en-US,en;q=0.5"',
             '-nv',
             '--no-cookies',
             '--content-on-error',
