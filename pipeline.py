@@ -65,7 +65,8 @@ VERSION = '20191202.00'
 #USER_AGENT = random.choice(f.read().splitlines()).strip()
 USER_AGENT = 'ArchiveTeam'
 TRACKER_ID = 'youtube-likedlists'
-TRACKER_HOST = 'tracker.archiveteam.org'
+#TRACKER_HOST = 'tracker.archiveteam.org'
+TRACKER_HOST = 'tracker-test.ddns.net'
 
 
 ###########################################################################
