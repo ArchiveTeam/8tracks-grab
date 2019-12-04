@@ -60,7 +60,7 @@ if not WGET_LUA:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = '20191204.01'
+VERSION = '20191204.02'
 #with open('user-agents', 'r') as f:
 #USER_AGENT = random.choice(f.read().splitlines()).strip()
 USER_AGENT = 'ArchiveTeam'
@@ -279,6 +279,7 @@ pipeline = Pipeline(
             'item_value': ItemValue('item_value'),
             'item_type': ItemValue('item_type'),
             'warc_file_base': ItemValue('warc_file_base'),
+            'downloader': downloader,
         }
     ),
     PrepareStatsForTracker(
