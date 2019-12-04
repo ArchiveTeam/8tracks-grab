@@ -53,8 +53,8 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
       end
       found = true
     end
-    if string.find(line, 'img .* data%-thumb%=') then
-      for key in string.gmatch(line,'data%-thumb=[\\]?["][^"]+["]') do
+    if string.find(line, 'img .*data%-thumb%=') then
+      for key in string.gmatch(line,' data%-thumb=[\\]?["][^"]+["]') do
         io.write("thumb:" .. key .. "\n")
       end
     end
