@@ -117,7 +117,7 @@ class CheckBan(SimpleTask):
         httpclient.AsyncHTTPClient.configure(None, defaults=dict(user_agent=USER_AGENT))
         http_client = httpclient.HTTPClient()
         try:
-            response = http_client.fetch("https://groups.yahoo.com/neo/search")  # dynamic
+            response = http_client.fetch("https://youtube.com/")  # dynamic
         except httpclient.HTTPError as e:
             msg = "Failed to get CheckBan URL: " + str(e)
             item.log_output(msg)
