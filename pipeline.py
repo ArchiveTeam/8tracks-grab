@@ -253,7 +253,7 @@ class WgetArgs(object):
 project = Project(
     title=TRACKER_ID,
     project_html='''
-<img class="project-logo" alt="logo" src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Yahoo_Groups.png" height="50px"/>
+<img class="project-logo" alt="logo" src="https://www.archiveteam.org/images/4/4d/YouTube_logo_2017.png" height="50px"/>
 <h2>youtube.com Liked Lists
  <span class="links">
   <a href="https://youtube.com">Website</a>
