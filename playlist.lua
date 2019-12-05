@@ -90,7 +90,7 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
     return wget.actions.NOTHING
   end
 
-  if (status_code == 503) then
+  if (status_code == 503 or status_code == 500 or status_code == 0) then
     error_count = error_count + 1
     if error_count / url_count < 0.5 then
       os.execute("sleep " .. error_count)
