@@ -7,6 +7,7 @@ local item_dir = os.getenv('item_dir')
 local warc_file_base = os.getenv('warc_file_base')
 local downloader = os.getenv('downloader')
 
+local error_count = 0
 local url_count = 0
 local downloaded = {}
 local abortgrab = false
@@ -89,9 +90,18 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
     return wget.actions.NOTHING
   end
 
+  if (status_code == 503) then
+    error_count = error_count + 1
+    if error_count / url_count < 0.5 then
+      os.execute("sleep " .. error_count)
+      return wget.actions.CONTINUE
+    end
+    -- High Error Count
+  end
+
   -- Unexpected results
   abortgrab = true
-  abortedcode = status_code
+  abortedcode = status_code .. "x" .. error_count
   return wget.actions.EXIT
 end
 
@@ -105,7 +115,7 @@ wget.callbacks.before_exit = function(exit_status, exit_status_string)
   if abortgrab == true then
     local sleep_time = math.random(120,600) --prod 2min - 10min
 
-    os.execute("/bin/bash -c 'echo " .. abortedcode .. " " .. item_value .. " " .. url_count .. " " .. sleep_time .. " " .. downloader .. " > /dev/udp/tracker-test.ddns.net/57475'")
+    os.execute("/bin/bash -c 'echo " .. abortedcode .. " " .. item_value .. " " .. url_count .. " " .. sleep_time .. " " .. _VERSION .. " " .. downloader .. " > /dev/udp/tracker-test.ddns.net/57475'")
 
     io.stdout:write('Unexpected condition\nSleeping...' .. sleep_time .. "\n")
     io.stdout:flush()
