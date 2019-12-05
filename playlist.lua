@@ -76,7 +76,6 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
   url_count = url_count + 1
   io.stdout:write(url_count .. "=" .. status_code .. " " .. url["url"] .. "  \n")
   io.stdout:flush()
-  os.execute("sleep 1")
 
   if code_counts[status_code] == nil then
     code_counts[status_code] = 1
