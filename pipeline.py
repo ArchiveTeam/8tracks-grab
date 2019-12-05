@@ -39,6 +39,8 @@ WGET_LUA = find_executable(
     'Wget+Lua',
     [
         'GNU Wget 1.20.3-at-lua',
+        'GNU Wget 1.14.lua.20130523-9a5c',
+        'GNU Wget 1.14.lua.20160530-955376b'
     ],
     [
         './wget-lua',
@@ -60,7 +62,7 @@ if not WGET_LUA:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = '20191204.03'
+VERSION = '20191204.04'
 #with open('user-agents', 'r') as f:
 #USER_AGENT = random.choice(f.read().splitlines()).strip()
 USER_AGENT = 'ArchiveTeam'
