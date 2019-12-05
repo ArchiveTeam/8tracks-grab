@@ -60,13 +60,13 @@ if not WGET_LUA:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = '20191204.02'
+VERSION = '20191204.03'
 #with open('user-agents', 'r') as f:
 #USER_AGENT = random.choice(f.read().splitlines()).strip()
 USER_AGENT = 'ArchiveTeam'
 TRACKER_ID = 'youtube-likedlists'
-#TRACKER_HOST = 'tracker.archiveteam.org'
-TRACKER_HOST = 'tracker-test.ddns.net'
+TRACKER_HOST = 'tracker.archiveteam.org'
+#TRACKER_HOST = 'tracker-test.ddns.net'
 
 
 ###########################################################################
