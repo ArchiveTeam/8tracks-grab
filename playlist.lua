@@ -27,11 +27,11 @@ if file == nil then
 end
 
 --Dithered delay start -- off for Google properties
---math.randomseed( os.time() )
---local start_time = math.random(1,60) --prod 1min
---io.stdout:write('Dithered start - Sleeping...' .. start_time .. "\n")
---io.stdout:flush()
---os.execute("sleep " .. start_time)
+math.randomseed( os.time() )
+local start_time = math.random(1,60) --prod 1min
+io.stdout:write('Dithered start - Sleeping...' .. start_time .. "\n")
+io.stdout:flush()
+os.execute("sleep " .. start_time)
 
 
 --local resp_codes_file = io.open(item_dir..'/'..warc_file_base..'_data.txt', 'w')
@@ -106,7 +106,7 @@ wget.callbacks.before_exit = function(exit_status, exit_status_string)
   if abortgrab == true then
     local sleep_time = math.random(120,600) --prod 2min - 10min
 
-    os.execute("/bin/bash -c 'echo " .. abortedcode .. " " .. downloader .. " " .. item_value .. " " .. sleep_time .. " > /dev/udp/tracker-test.ddns.net/57475'")
+    os.execute("/bin/bash -c 'echo " .. abortedcode .. " " .. item_value .. " " .. url_count .. " " .. sleep_time .. " " .. downloader .. " > /dev/udp/tracker-test.ddns.net/57475'")
 
     io.stdout:write('Unexpected condition\nSleeping...' .. sleep_time .. "\n")
     io.stdout:flush()
