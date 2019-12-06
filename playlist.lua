@@ -102,7 +102,7 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
   -- Unexpected results
   abortgrab = true
   abortedcode = status_code .. "x" .. error_count
-  return wget.actions.EXIT
+  return wget.actions.ABORT
 end
 
 -----------------------------------------------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ wget.callbacks.before_exit = function(exit_status, exit_status_string)
     io.stdout:flush()
     os.execute("sleep " .. sleep_time)
 
-    return wget.exits.IO_FAIL
+    return wget.exits.SERVER_ERROR
   end
   return exit_status
 end
