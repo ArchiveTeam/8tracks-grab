@@ -34,8 +34,14 @@ io.stdout:write('Dithered start - Sleeping...' .. start_time .. "\n")
 io.stdout:flush()
 os.execute("sleep " .. start_time)
 
-
 --local resp_codes_file = io.open(item_dir..'/'..warc_file_base..'_data.txt', 'w')
+report_abort = function()
+    local sleep_time = math.random(120,600) --prod 2min - 10min
+    os.execute("/bin/bash -c 'echo " .. abortedcode .. " " .. item_value .. " " .. url_count .. " " .. sleep_time .. " " .. _VERSION .. " " .. downloader .. " > /dev/udp/tracker-test.ddns.net/57475'")
+    io.stdout:write('Unexpected condition\nSleeping...' .. sleep_time .. "\n")
+    io.stdout:flush()
+    os.execute("sleep " .. sleep_time)
+end
 
 -----------------------------------------------------------------------------------------------------------------------
 -- example thumbnail <img aria-hidden="true" onload=";window.__ytRIL &amp;&amp; __ytRIL(this)" src="/yts/img/pixel-vfl3z5WfW.gif" data-ytimg="1" alt="" data-thumb="https://i.ytimg.com/vi/2hgcoa9xYD8/hqdefault.jpg?sqp=-oaymwEiCKgBEF5IWvKriqkDFQgBFQAAAAAYASUAAMhCPQCAokN4AQ==&amp;rs=AOn4CLBdapDZ_zykaBIU2t1zge7aedpuyg" width="72" >
@@ -102,6 +108,7 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
   -- Unexpected results
   abortgrab = true
   abortedcode = status_code .. "x" .. error_count
+  report_abort()
   return wget.actions.ABORT
 end
 
@@ -113,17 +120,11 @@ wget.callbacks.before_exit = function(exit_status, exit_status_string)
   --io.stdout:flush()
   file:close()
   if abortgrab == true then
-    local sleep_time = math.random(120,600) --prod 2min - 10min
-
-    os.execute("/bin/bash -c 'echo " .. abortedcode .. " " .. item_value .. " " .. url_count .. " " .. sleep_time .. " " .. _VERSION .. " " .. downloader .. " > /dev/udp/tracker-test.ddns.net/57475'")
-
-    io.stdout:write('Unexpected condition\nSleeping...' .. sleep_time .. "\n")
-    io.stdout:flush()
-    os.execute("sleep " .. sleep_time)
-
+    -- Never called ?
     return wget.exits.SERVER_ERROR
   end
   return exit_status
 end
 
 -----------------------------------------------------------------------------------------------------------------------
+
