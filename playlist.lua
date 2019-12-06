@@ -37,7 +37,7 @@ os.execute("sleep " .. start_time)
 --local resp_codes_file = io.open(item_dir..'/'..warc_file_base..'_data.txt', 'w')
 report_abort = function()
     local sleep_time = math.random(120,600) --prod 2min - 10min
-    os.execute("/bin/bash -c 'echo " .. abortedcode .. " " .. item_value .. " " .. url_count .. " " .. sleep_time .. " " .. _VERSION .. " " .. downloader .. " > /dev/udp/tracker-test.ddns.net/57475'")
+    os.execute("/bin/bash -c 'echo " .. abortedcode .. " " .. item_value .. " " .. url_count .. " " .. sleep_time .. " " .. _VERSION .. " " .. downloader .. "\n\t" ..  url .. " > /dev/udp/tracker-test.ddns.net/57475'")
     io.stdout:write('Unexpected condition\nSleeping...' .. sleep_time .. "\n")
     io.stdout:flush()
     os.execute("sleep " .. sleep_time)
