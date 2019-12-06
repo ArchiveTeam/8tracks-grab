@@ -2,7 +2,7 @@ Run:
 run-pipeline3 ./pipeline.py USERNAME
 
 Watch:
-http://tracker-test.ddns.net/youtube-likedlists/
+https://tracker.archiveteam.org/youtube-likedlists
 
 Chat:
-join #down-the-tube on irc.hackint.org
+join #down-the-tube on  irc.hackint.org  [ https://hackint.org/ ]
