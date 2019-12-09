@@ -62,7 +62,7 @@ if not WGET_LUA:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = '20191209.01'
+VERSION = '20191209.02'
 #with open('user-agents', 'r') as f:
 #USER_AGENT = random.choice(f.read().splitlines()).strip()
 USER_AGENT = 'ArchiveTeam'
@@ -188,7 +188,7 @@ class WgetArgs(object):
         wget_args = [
             WGET_LUA,
             '-U', USER_AGENT,
-            '--header, 'Accept-Language: en-US,en;q=0.5',
+            '--header', 'Accept-Language: en-US,en;q=0.5',
             '-nv',
             '--no-cookies',
             '--content-on-error',
