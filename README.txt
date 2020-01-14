@@ -1,8 +1,8 @@
 Run:
-run-pipeline3 ./pipeline.py USERNAME
+run-pipeline3 ./pipeline.py $USERNAME
 
 Watch:
-https://tracker.archiveteam.org/youtube-likedlists
+https://tracker.archiveteam.org/8tracks
 
 Chat:
-join #down-the-tube on  irc.hackint.org  [ https://hackint.org/ ]
+join #8tracks on  irc.hackint.org  [ https://hackint.org/ ]
