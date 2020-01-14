@@ -64,7 +64,7 @@ VERSION = '20200114.00'
 USER_AGENT = 'ArchiveTeam'
 TRACKER_ID = '8tracks'
 TRACKER_HOST = 'tracker.archiveteam.org' # prod
-#TRACKER_HOST = 'tracker-test.ddns.net' # test
+TRACKER_HOST = 'tracker-test.ddns.net' # test
 
 
 ###########################################################################
@@ -158,7 +158,6 @@ def stats_id_function(item):
 
     return d
 
-url_count_target = 0;
 class WgetArgs(object):
     def realize(self, item):
         wget_args = [
@@ -167,7 +166,7 @@ class WgetArgs(object):
             '-nv',
             '--no-cookies',
             '--content-on-error',
-            '--lua-script', 'playlist.lua',
+            '--lua-script', 'static-tracks.lua',
             '-o', ItemInterpolation('%(item_dir)s/wget.log'),
             '--no-check-certificate',
             '--output-document', ItemInterpolation('%(item_dir)s/wget.tmp'),
@@ -187,7 +186,7 @@ class WgetArgs(object):
             '--warc-header', '8tracks-dld-script-version: ' + VERSION,
             '--warc-header', ItemInterpolation('8tracks-item: %(item_name)s'), # TODO
         ]
-
+        item['url_count_target'] = 0
         item_name = item['item_name']
         assert ':' in item_name
         item_type, item_value = item_name.split(':', 1)
@@ -207,7 +206,7 @@ class WgetArgs(object):
                     continue
                 #wget_args.extend(['--warc-header', 'youtube-likedlists-playlist: ' + playlist_id]) # TODO
                 wget_args.append(line)
-                url_count_target+=1
+                item['url_count_target'] += 1
         else:
             raise Exception('Unknown item')
 
@@ -219,6 +218,7 @@ class WgetArgs(object):
             print('*** Wget will bind address at {0} ***'.format(
                 globals()['bind_address']))
             print('')
+        item['url_count_target'] = str(item['url_count_target'])
 
         return realize(wget_args, item)
 
@@ -256,7 +256,7 @@ pipeline = Pipeline(
             'item_type': ItemValue('item_type'),
             'warc_file_base': ItemValue('warc_file_base'),
             'downloader': downloader,
-            'url_count_target': url_count_target,
+            'url_count_target': ItemValue('url_count_target'),
         }
     ),
     PrepareStatsForTracker(

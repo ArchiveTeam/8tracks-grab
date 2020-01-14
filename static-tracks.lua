@@ -75,11 +75,13 @@ end
 -----------------------------------------------------------------------------------------------------------------------
 
 wget.callbacks.before_exit = function(exit_status, exit_status_string)
+  io.stdout:write(code_counts[200] .. "==" .. url_count_target .. "\n")
+  io.stdout:flush()
   if abortgrab == true then
     -- Never called ?
     return wget.exits.SERVER_ERROR
   end
-  if code_counts[200] == url_count_target then
+  if code_counts[200] == tonumber(url_count_target) then
     return wget.exits.SUCCESS
   end
   return wget.exits.SERVER_ERROR
