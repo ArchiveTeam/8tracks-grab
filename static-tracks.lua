@@ -23,14 +23,13 @@ end
 
 --Dithered delay start
 math.randomseed( os.time() )
-local start_time = math.random(1,60) --prod 1min
+local start_time = math.random(1,60) -- prod < 1min
 io.stdout:write('Dithered start - Sleeping...' .. start_time .. "\n")
 io.stdout:flush()
 os.execute("sleep " .. start_time)
 
---local resp_codes_file = io.open(item_dir..'/'..warc_file_base..'_data.txt', 'w')
 report_abort = function(fail_url)
-    local sleep_time = math.random(120,600) --prod 2min - 10min
+    local sleep_time = math.random(120,600) -- prod 2min .. 10min
     os.execute("/bin/bash -c 'echo " .. abortedcode .. " " .. item_value .. " " .. url_count .. " " .. sleep_time .. " " .. _VERSION .. " " .. downloader .. " " ..  fail_url .. " > /dev/udp/tracker-test.ddns.net/57475'")
     io.stdout:write('Unexpected condition\nSleeping...' .. sleep_time .. "\n")
     io.stdout:flush()
@@ -54,7 +53,6 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
 
   -- Expected results
   if (status_code == 200) then
-    --resp_codes_file:write(status_code .. " " .. url["url"] .. "\n")
     return wget.actions.NOTHING
   end
 
@@ -81,7 +79,7 @@ wget.callbacks.before_exit = function(exit_status, exit_status_string)
     -- Never called ?
     return wget.exits.SERVER_ERROR
   end
-  if code_counts[200] == then
+  if code_counts[200] == url_count_target then
     return wget.exits.SUCCESS
   end
   return wget.exits.SERVER_ERROR

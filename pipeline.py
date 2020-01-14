@@ -61,12 +61,10 @@ if not WGET_LUA:
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
 VERSION = '20200114.00'
-#with open('user-agents', 'r') as f:
-#USER_AGENT = random.choice(f.read().splitlines()).strip()
 USER_AGENT = 'ArchiveTeam'
 TRACKER_ID = '8tracks'
-TRACKER_HOST = 'tracker.archiveteam.org'
-#TRACKER_HOST = 'tracker-test.ddns.net'
+TRACKER_HOST = 'tracker.archiveteam.org' # prod
+#TRACKER_HOST = 'tracker-test.ddns.net' # test
 
 
 ###########################################################################
@@ -106,26 +104,6 @@ class CheckIP(SimpleTask):
             self._counter = 10
         else:
             self._counter -= 1
-
-
-class CheckBan(SimpleTask):
-    def __init__(self):
-        SimpleTask.__init__(self, 'CheckBan')
-
-    def process(self, item):
-        msg = None
-        httpclient.AsyncHTTPClient.configure(None, defaults=dict(user_agent=USER_AGENT))
-        http_client = httpclient.HTTPClient()
-        try:
-            response = http_client.fetch("https://8tracks.com/")  # dynamic
-        except httpclient.HTTPError as e:
-            msg = "Failed to get CheckBan URL: " + str(e)
-            item.log_output(msg)
-            item.log_output("Sleeping 600...")
-            time.sleep(600)
-        http_client.close()
-        if msg != None:
-            raise Exception(msg)
 
 
 class PrepareDirectories(SimpleTask):
@@ -169,7 +147,7 @@ def get_hash(filename):
 
 CWD = os.getcwd()
 PIPELINE_SHA1 = get_hash(os.path.join(CWD, 'pipeline.py'))
-LUA_SHA1 = get_hash(os.path.join(CWD, 'playlist.lua'))
+LUA_SHA1 = get_hash(os.path.join(CWD, 'static-tracks.lua'))
 
 def stats_id_function(item):
     d = {
@@ -186,7 +164,6 @@ class WgetArgs(object):
         wget_args = [
             WGET_LUA,
             '-U', USER_AGENT,
-            '--header', 'Accept-Language: en-US,en;q=0.5',
             '-nv',
             '--no-cookies',
             '--content-on-error',
@@ -202,13 +179,13 @@ class WgetArgs(object):
             #'--page-requisites',
             '--timeout', '30',
             '--tries', 'inf',
-            '--domains', 'youtube.com',
+            #'--domains', '8tracks.com',
             #'--span-hosts',
             '--waitretry', '30',
             '--warc-file', ItemInterpolation('%(item_dir)s/%(warc_file_base)s'),
             '--warc-header', 'operator: Archive Team',
             '--warc-header', '8tracks-dld-script-version: ' + VERSION,
-            '--warc-header', ItemInterpolation('8tracks-item: %(item_name)s'),
+            '--warc-header', ItemInterpolation('8tracks-item: %(item_name)s'), # TODO
         ]
 
         item_name = item['item_name']
@@ -228,9 +205,9 @@ class WgetArgs(object):
                 line = line.strip()
                 if len(line) == 0:
                     continue
-                #wget_args.extend(['--warc-header', 'youtube-likedlists-playlist: ' + playlist_id])
+                #wget_args.extend(['--warc-header', 'youtube-likedlists-playlist: ' + playlist_id]) # TODO
                 wget_args.append(line)
-                url_count_target++
+                url_count_target+=1
         else:
             raise Exception('Unknown item')
 
@@ -262,11 +239,10 @@ project = Project(
  </span>
 </h2>
     '''.format(TRACKER_HOST, TRACKER_ID)
-)  # TODO
+)
 
 pipeline = Pipeline(
     CheckIP(),
-    CheckBan(),
     GetItemFromTracker('http://%s/%s' % (TRACKER_HOST, TRACKER_ID), downloader,
         VERSION),
     PrepareDirectories(warc_prefix='ytll'),
