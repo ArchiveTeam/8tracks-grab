@@ -39,8 +39,6 @@ WGET_LUA = find_executable(
     'Wget+Lua',
     [
         'GNU Wget 1.20.3-at-lua',
-        'GNU Wget 1.14.lua.20130523-9a5c',
-        'GNU Wget 1.14.lua.20160530-955376b'
     ],
     [
         './wget-lua',
@@ -62,11 +60,11 @@ if not WGET_LUA:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = '20191209.02'
+VERSION = '20200114.00'
 #with open('user-agents', 'r') as f:
 #USER_AGENT = random.choice(f.read().splitlines()).strip()
 USER_AGENT = 'ArchiveTeam'
-TRACKER_ID = 'youtube-likedlists'
+TRACKER_ID = '8tracks'
 TRACKER_HOST = 'tracker.archiveteam.org'
 #TRACKER_HOST = 'tracker-test.ddns.net'
 
@@ -119,7 +117,7 @@ class CheckBan(SimpleTask):
         httpclient.AsyncHTTPClient.configure(None, defaults=dict(user_agent=USER_AGENT))
         http_client = httpclient.HTTPClient()
         try:
-            response = http_client.fetch("https://youtube.com/")  # dynamic
+            response = http_client.fetch("https://8tracks.com/")  # dynamic
         except httpclient.HTTPError as e:
             msg = "Failed to get CheckBan URL: " + str(e)
             item.log_output(msg)
@@ -182,7 +180,7 @@ def stats_id_function(item):
 
     return d
 
-
+url_count_target = 0;
 class WgetArgs(object):
     def realize(self, item):
         wget_args = [
@@ -209,8 +207,8 @@ class WgetArgs(object):
             '--waitretry', '30',
             '--warc-file', ItemInterpolation('%(item_dir)s/%(warc_file_base)s'),
             '--warc-header', 'operator: Archive Team',
-            '--warc-header', 'youtube-likedlists-dld-script-version: ' + VERSION,
-            '--warc-header', ItemInterpolation('youtube-likedlists-item: %(item_name)s'),
+            '--warc-header', '8tracks-dld-script-version: ' + VERSION,
+            '--warc-header', ItemInterpolation('8tracks-item: %(item_name)s'),
         ]
 
         item_name = item['item_name']
@@ -222,17 +220,17 @@ class WgetArgs(object):
 
         http_client = httpclient.HTTPClient()
 
-        if item_type == 'chan_set':
-            response = http_client.fetch('https://raw.githubusercontent.com/ArchiveTeam/youtube-likedlists-items/master/items/' + item_value, method='GET')
+        if item_type == 'tracks':
+            response = http_client.fetch('https://raw.githubusercontent.com/marked/8tracks-items/master/items/' + item_value, method='GET')
             if response.code != 200:
                 raise ValueError('Got bad status code {}.'.format(response.code))
             for line in response.body.decode('utf-8', 'ignore').splitlines():
-                chan_id = line.strip()
-                if len(chan_id) == 0:
+                line = line.strip()
+                if len(line) == 0:
                     continue
-                playlist_id = chan_id.replace("UC", "LL", 1)
-                wget_args.extend(['--warc-header', 'youtube-likedlists-playlist: ' + playlist_id])
-                wget_args.append('https://www.youtube.com/playlist?list=' + playlist_id)
+                #wget_args.extend(['--warc-header', 'youtube-likedlists-playlist: ' + playlist_id])
+                wget_args.append(line)
+                url_count_target++
         else:
             raise Exception('Unknown item')
 
@@ -255,10 +253,10 @@ class WgetArgs(object):
 project = Project(
     title=TRACKER_ID,
     project_html='''
-<img class="project-logo" alt="logo" src="https://www.archiveteam.org/images/4/4d/YouTube_logo_2017.png" height="50px"/>
-<h2>youtube.com Liked Lists
+<img class="project-logo" alt="logo" src="https://www.archiveteam.org/images/0/07/8tracks_logo.png" height="50px"/>
+<h2>8tracks internet radio
  <span class="links">
-  <a href="https://youtube.com">Website</a>
+  <a href="https://8tracks.com">Website</a>
   &middot;
   <a href="http://{0}/{1}/">Leaderboard</a>
  </span>
@@ -282,6 +280,7 @@ pipeline = Pipeline(
             'item_type': ItemValue('item_type'),
             'warc_file_base': ItemValue('warc_file_base'),
             'downloader': downloader,
+            'url_count_target': url_count_target,
         }
     ),
     PrepareStatsForTracker(
@@ -303,7 +302,6 @@ pipeline = Pipeline(
             version=VERSION,
             files=[
                 ItemInterpolation('%(data_dir)s/%(warc_file_base)s.warc.gz'),
-                ItemInterpolation('%(data_dir)s/%(warc_file_base)s_data.txt')
             ],
             rsync_target_source_path=ItemInterpolation('%(data_dir)s/'),
             rsync_extra_args=[
