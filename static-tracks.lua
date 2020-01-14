@@ -21,12 +21,13 @@ for ignore in io.open("ignore-list", "r"):lines() do
   downloaded[ignore] = true
 end
 
---Dithered delay start
-math.randomseed( os.time() )
-local start_time = math.random(1,60) -- prod < 1min
-io.stdout:write('Dithered start - Sleeping...' .. start_time .. "\n")
-io.stdout:flush()
-os.execute("sleep " .. start_time)
+--Dithered delay start -- OFF
+--math.randomseed( os.time() )
+--local start_time = math.random(1,60) -- prod < 1min
+--io.stdout:write('Dithered start - Sleeping...' .. start_time .. "\n")
+--io.stdout:flush()
+--os.execute("sleep " .. start_time)
+
 
 report_abort = function(fail_url)
     local sleep_time = math.random(120,600) -- prod 2min .. 10min
