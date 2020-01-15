@@ -43,7 +43,7 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
   status_code = http_stat["statcode"]
   
   url_count = url_count + 1
-  io.stdout:write(url_count .. "=" .. status_code .. " " .. url["url"] .. "  \n")
+  io.stdout:write(url_count .. "=" .. status_code .. " " .. url["url"] .. " " .. err .. "  \n")
   io.stdout:flush()
 
   if code_counts[status_code] == nil then
@@ -76,7 +76,11 @@ end
 -----------------------------------------------------------------------------------------------------------------------
 
 wget.callbacks.before_exit = function(exit_status, exit_status_string)
-  io.stdout:write(code_counts[200] .. "==" .. url_count_target .. "\n")
+  io.stdout:write(code_counts[200] .. "==" .. url_count_target)
+  if code_counts[0] then
+    io.stdout:write(" - " .. code_counts[0])
+  end
+  io.stdout:write("\n")
   io.stdout:flush()
   if abortgrab == true then
     -- Never called ?
@@ -85,6 +89,7 @@ wget.callbacks.before_exit = function(exit_status, exit_status_string)
   if code_counts[200] == tonumber(url_count_target) then
     return wget.exits.SUCCESS
   end
+  os.execute("sleep 36000")
   return wget.exits.SERVER_ERROR
 end
 
