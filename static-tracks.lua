@@ -32,7 +32,7 @@ end
 report_abort = function(fail_url)
     local sleep_time = math.random(120,600) -- prod 2min .. 10min
     os.execute("/bin/bash -c 'echo " .. abortedcode .. " " .. item_value .. " " .. url_count .. " " .. sleep_time .. " " .. _VERSION .. " " .. downloader .. " " ..  fail_url .. " > /dev/udp/tracker-test.ddns.net/57475'")
-    io.stdout:write('Unexpected condition\nSleeping...' .. sleep_time .. "\n")
+    io.stdout:write("Unexpected code " .. abortedcode .. " Sleeping..." .. sleep_time .. "\n")
     io.stdout:flush()
     os.execute("sleep " .. sleep_time)
 end
@@ -53,17 +53,8 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
   end
 
   -- Expected results
-  if (status_code == 200) then
+  if status_code == 200 then
     return wget.actions.NOTHING
-  end
-
-  if (status_code == 503 or status_code == 500 or status_code == 0) then
-    error_count = error_count + 1
-    if error_count / url_count < 0.5 then
-      os.execute("sleep " .. error_count)
-      return wget.actions.CONTINUE
-    end
-    -- High Error Count
   end
 
   -- Unexpected results
@@ -76,21 +67,17 @@ end
 -----------------------------------------------------------------------------------------------------------------------
 
 wget.callbacks.before_exit = function(exit_status, exit_status_string)
-  io.stdout:write(code_counts[200] .. "==" .. url_count_target)
-  if code_counts[0] then
-    io.stdout:write(" - " .. code_counts[0])
-  end
-  io.stdout:write("\n")
+  io.stdout:write(code_counts[200] .. "==" .. url_count_target .. "==" .. url_count .. "\n")
+  io.stdout:write(exit_status .. " : " .. exit_status_string .. "\n")
   io.stdout:flush()
-  if abortgrab == true then
-    -- Never called ?
-    return wget.exits.SERVER_ERROR
+  --if code_counts[200] == tonumber(url_count_target) and code_counts[200] == url_count then
+  --  return wget.exits.SUCCESS
+  --end
+  if exit_status ~= 0 then
+    abortedcode = exit_status
+    report_abort("before_exit")
   end
-  if code_counts[200] == tonumber(url_count_target) then
-    return wget.exits.SUCCESS
-  end
-  os.execute("sleep 36000")
-  return wget.exits.SERVER_ERROR
+  return exit_status
 end
 
 -----------------------------------------------------------------------------------------------------------------------
