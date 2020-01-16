@@ -196,8 +196,8 @@ class WgetArgs(object):
 
         http_client = httpclient.HTTPClient()
 
-        if item_type == 'tracks':
-            response = http_client.fetch('https://raw.githubusercontent.com/marked/8tracks-items/master/items/' + item_value, method='GET')
+        if item_type == 'list':
+            response = http_client.fetch('https://raw.githubusercontent.com/ArchiveTeam/8tracks-items/lists/list-' + item_value, method='GET')
             if response.code != 200:
                 raise ValueError('Got bad status code {}.'.format(response.code))
             for line in response.body.decode('utf-8', 'ignore').splitlines():
