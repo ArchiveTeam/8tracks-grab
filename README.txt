@@ -1,3 +1,6 @@
+Checkout:
+git clone https://github.com/ArchiveTeam/8tracks-grab
+
 Run:
 run-pipeline3 ./pipeline.py $USERNAME
 
