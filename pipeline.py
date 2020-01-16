@@ -60,11 +60,10 @@ if not WGET_LUA:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = '20200114.00'
+VERSION = '20200116.01'
 USER_AGENT = 'ArchiveTeam'
 TRACKER_ID = '8tracks'
 TRACKER_HOST = 'tracker.archiveteam.org' # prod
-TRACKER_HOST = 'tracker-test.ddns.net' # test
 
 
 ###########################################################################
