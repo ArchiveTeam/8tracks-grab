@@ -4,7 +4,7 @@ Checkout:
 
 Running with Docker: 
   docker build .
-  docker run $HASH $USERNAME
+  docker run $HASH $USERNAME --concurrent 4
 
 Running with scripts:
   Install Deps:
@@ -14,10 +14,10 @@ Running with scripts:
     ./get-wget-lua.sh
   
   Install seesaw:
-    pip3 install seesaw
+    pip3 install --upgrade seesaw
 
   Run:
-    run-pipeline3 ./pipeline.py $USERNAME
+    run-pipeline3 ./pipeline.py --concurrent 4 $USERNAME
 
 Watch:
   http://tracker.archiveteam.org/8tracks/
