@@ -1,7 +1,12 @@
 Checkout:
 git clone https://github.com/ArchiveTeam/8tracks-grab
+cd 8tracks-grab
 
-Run:
+Running with Docker: 
+docker build .
+docker run $HASH $USERNAME
+
+Running with scripts:
 run-pipeline3 ./pipeline.py $USERNAME
 
 Watch:
