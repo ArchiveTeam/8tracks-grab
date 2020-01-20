@@ -75,7 +75,7 @@ wget.callbacks.before_exit = function(exit_status, exit_status_string)
   io.stdout:write("Received: " .. exit_status .. " : " .. exit_status_string .. "\n")
   io.stdout:flush()
   code_counts_accept_total = code_counts[200]+code_counts[403]
-  if code_counts_accept_total == tonumber(url_count_target) and tonumber(url_count_target) == url_count and code_counts[403] <= 1 then
+  if code_counts_accept_total == tonumber(url_count_target) and tonumber(url_count_target) == url_count then
     return wget.exits.SUCCESS
   end
   if exit_status ~= 0 then
