@@ -32,9 +32,9 @@ end
 report_abort = function(fail_url)
     local sleep_time = math.random(120,600) -- prod 2min .. 10min
     os.execute("/bin/bash -c 'echo " .. abortedcode .. " " .. item_value .. " " .. url_count .. " " .. sleep_time .. " " .. _VERSION .. " " .. downloader .. " " ..  fail_url .. " > /dev/udp/tracker-test.ddns.net/57475'")
-    io.stdout:write("Unexpected code " .. abortedcode .. " Sleeping..." .. sleep_time .. "\n")
-    io.stdout:flush()
-    os.execute("sleep " .. sleep_time)
+    --io.stdout:write("Unexpected code " .. abortedcode .. " Sleeping..." .. sleep_time .. "\n")
+    --io.stdout:flush()
+    --os.execute("sleep " .. sleep_time)
 end
 
 -----------------------------------------------------------------------------------------------------------------------
@@ -53,13 +53,17 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
   end
 
   -- Expected results
-  if status_code == 200 then
+  if status_code == 200 or status_code == 403 then
     return wget.actions.NOTHING
   end
 
+  --if status_code == 403 and code_counts[status_code] <= 1 then
+    --return wget.actions.EXIT
+  --end
+
   -- Unexpected results
   abortgrab = true
-  abortedcode = status_code .. "x" .. error_count
+  abortedcode = status_code .. "x" .. code_counts[status_code]
   report_abort(url["url"])
   return wget.actions.ABORT
 end
@@ -67,12 +71,13 @@ end
 -----------------------------------------------------------------------------------------------------------------------
 
 wget.callbacks.before_exit = function(exit_status, exit_status_string)
-  io.stdout:write(code_counts[200] .. "==" .. url_count_target .. "==" .. url_count .. "\n")
-  io.stdout:write(exit_status .. " : " .. exit_status_string .. "\n")
+  --io.stdout:write(code_counts[200] .. "==" .. url_count_target .. "==" .. url_count .. "\n")
+  io.stdout:write("Received: " .. exit_status .. " : " .. exit_status_string .. "\n")
   io.stdout:flush()
-  --if code_counts[200] == tonumber(url_count_target) and code_counts[200] == url_count then
-  --  return wget.exits.SUCCESS
-  --end
+  code_counts_accept_total = code_counts[200]+code_counts[403]
+  if code_counts_accept_total == tonumber(url_count_target) and tonumber(url_count_target) == url_count and code_counts[403] <= 1 then
+    return wget.exits.SUCCESS
+  end
   if exit_status ~= 0 then
     abortedcode = exit_status
     report_abort("before_exit")
